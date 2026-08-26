@@ -30,7 +30,10 @@ export default function App() {
   // Boot: settings first, since they determine the default interval used by
   // the initial candle load.
   useEffect(() => {
-    if (!hasBridge) return;
+    // No hasBridge guard. It was here because `api` was undefined outside Electron,
+    // so every one of these calls would have thrown; now the browser bridge answers
+    // the same contract, and skipping the boot was what left the chart empty with
+    // no error to explain it — loading finished, and nothing had been asked for.
     void (async () => {
       await loadSettings();
       await loadWatchlists();
@@ -49,17 +52,12 @@ export default function App() {
     })();
   }, [loadSettings, loadWatchlists, reloadCandles, loadBenchmark, loadAlerts, loadDrawings, loadFundamentals, loadEarnings]);
 
-  // Feed-health pushes from the main process.
-  useEffect(() => {
-    if (!hasBridge) return;
-    return api.onDataStatus(setStatus);
-  }, [setStatus]);
+  // Feed-health pushes from the main process. The browser bridge has nothing to
+  // push, so its subscribe returns a no-op unsubscribe and this is simply quiet.
+  useEffect(() => api.onDataStatus(setStatus), [setStatus]);
 
   // Alerts fire in the main process, including while this window was hidden.
-  useEffect(() => {
-    if (!hasBridge) return;
-    return api.onAlertFired(receiveAlertEvent);
-  }, [receiveAlertEvent]);
+  useEffect(() => api.onAlertFired(receiveAlertEvent), [receiveAlertEvent]);
 
   // "/" opens search, the way it does in every trading terminal.
   useEffect(() => {
@@ -81,21 +79,22 @@ export default function App() {
     document.documentElement.dataset.theme = settings.theme;
   }, [settings.theme]);
 
-  if (!hasBridge) {
-    return (
-      <div className="flex h-full flex-col items-center justify-center p-8 text-center">
-        <h1 className="text-lg font-semibold text-down">No preload bridge</h1>
-        <p className="mt-2 max-w-md text-ink-dim">
-          The renderer is running outside Electron. Start the app with{' '}
-          <code className="rounded bg-panel-2 px-1.5 py-0.5">npm run dev</code> rather than opening the Vite URL in a
-          browser.
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="flex h-full flex-col bg-ground text-ink">
+      {/*
+        Outside Electron the app runs on the browser bridge: the interface is real,
+        the prices are a seeded walk and anything saved lives in localStorage. Said
+        once, quietly, at the top — it used to be a full-screen dead end, which made
+        the whole UI unreachable in a browser for the sake of a caveat.
+      */}
+      {!hasBridge && (
+        <div className="flex items-center gap-2 border-b border-line bg-panel-2 px-3 py-1.5 text-xs text-ink-dim">
+          <span className="font-semibold text-ink">Browser preview</span>
+          <span>
+            Sample prices, saved in this browser. Live data and scripts need the desktop app.
+          </span>
+        </div>
+      )}
       <Toolbar onSearch={() => setSearchOpen(true)} onOpenAlerts={() => setAlertsOpen(true)} />
 
       <div className="flex min-h-0 flex-1">
