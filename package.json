@@ -1,0 +1,233 @@
+{
+  "name": "tradingview-replica",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local-first charting and market analysis desktop app",
+  "author": "shahar-nadiv",
+  "license": "MIT",
+  "main": "dist/electron/main.js",
+  "scripts": {
+    "dev": "concurrently -k -n vite,electron -c cyan,magenta \"npm:dev:renderer\" \"npm:dev:electron\"",
+    "dev:renderer": "vite --config renderer/vite.config.ts",
+    "dev:electron": "npm run build:electron && cross-env NODE_ENV=development electron .",
+    "build:electron": "tsc -p electron/tsconfig.json",
+    "build:renderer": "vite build --config renderer/vite.config.ts",
+    "build": "npm run build:electron:prod && npm run build:renderer",
+    "start": "cross-env NODE_ENV=production electron .",
+    "dist": "npm run build && electron-builder --linux",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p electron/tsconfig.json --noEmit && tsc -p renderer/tsconfig.json --noEmit",
+    "rebuild": "electron-rebuild -f -w better-sqlite3",
+    "postinstall": "electron-rebuild -f -w better-sqlite3",
+    "dist:deb": "npm run build && electron-builder --linux deb",
+    "dist:dir": "npm run build && electron-builder --linux dir",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "dist:win": "npm run build && electron-builder --win",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:win:docker": "docker run --rm -v \"$PWD\":/project -v ~/.cache/electron:/root/.cache/electron -v ~/.cache/electron-builder:/root/.cache/electron-builder electronuserland/builder:wine /bin/bash -c \"npm run build && npx electron-builder --win --publish never\"",
+    "build:electron:prod": "tsc -p electron/tsconfig.json --sourceMap false"
+  },
+  "dependencies": {
+    "acorn": "^8.15.0",
+    "acorn-walk": "^8.3.4",
+    "astring": "^1.9.0",
+    "better-sqlite3": "^13.0.3",
+    "luxon": "^3.7.2",
+    "yahoo-finance2": "^4.0.2"
+  },
+  "devDependencies": {
+    "@electron/rebuild": "^4.0.1",
+    "@tailwindcss/vite": "^4.1.14",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/luxon": "^3.7.1",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.1",
+    "@vitejs/plugin-react": "^5.0.4",
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "electron": "^43.3.0",
+    "electron-builder": "^26.15.3",
+    "lightweight-charts": "^5.2.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwindcss": "^4.1.14",
+    "typescript": "^5.7.3",
+    "vite": "^6.3.6",
+    "vitest": "^3.0.5",
+    "zustand": "^5.0.14"
+  },
+  "build": {
+    "appId": "com.shaharnadiv.marketlab",
+    "productName": "MarketLab",
+    "copyright": "Copyright \u00a9 2026 shahar-nadiv",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json",
+      "!**/*.map",
+      "!dist/**/*.map",
+      "!**/*.test.js",
+      "!dist/**/*.test.js"
+    ],
+    "extraResources": [
+      {
+        "from": "build/tray.png",
+        "to": "tray.png"
+      },
+      {
+        "from": "build/icon.png",
+        "to": "icon.png"
+      }
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "**/node_modules/better-sqlite3/**"
+    ],
+    "npmRebuild": true,
+    "linux": {
+      "target": [
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icons",
+      "category": "Office;Finance",
+      "synopsis": "Local-first charting and market analysis",
+      "description": "Charting and market analysis for stocks, ETFs and exchange indices, with moving-average analysis, custom indicator scripts, watchlists, drawing tools and price alerts. All data is stored locally in a single SQLite file; no account and no subscription.",
+      "maintainer": "shahar-nadiv <shacharnadiv@gmail.com>",
+      "desktop": {
+        "entry": {
+          "Name": "MarketLab",
+          "GenericName": "Market Analysis",
+          "Comment": "Local-first charting and market analysis",
+          "Categories": "Office;Finance;",
+          "Keywords": "stocks;charts;trading;finance;market;analysis;",
+          "StartupNotify": "true",
+          "StartupWMClass": "marketlab",
+          "Terminal": "false"
+        }
+      },
+      "executableName": "marketlab",
+      "syncDesktopName": true,
+      "files": [
+        "!**/node_modules/better-sqlite3/prebuilds/win32-*.node",
+        "!**/node_modules/better-sqlite3/prebuilds/darwin-*.node",
+        "!**/node_modules/better-sqlite3/prebuilds/linuxmusl-*.node",
+        "!**/node_modules/better-sqlite3/prebuilds/linux-arm64.node"
+      ]
+    },
+    "deb": {
+      "priority": "optional",
+      "depends": [
+        "libgtk-3-0",
+        "libnotify4",
+        "libnss3",
+        "libxss1",
+        "libxtst6",
+        "xdg-utils",
+        "libatspi2.0-0",
+        "libsecret-1-0"
+      ]
+    },
+    "appImage": {
+      "license": "LICENSE.txt"
+    },
+    "electronLanguages": [
+      "en-US"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png",
+      "files": [
+        "!**/node_modules/better-sqlite3/prebuilds/linux*-*.node",
+        "!**/node_modules/better-sqlite3/prebuilds/darwin-*.node",
+        "!**/node_modules/better-sqlite3/prebuilds/win32-arm64.node"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "MarketLab",
+      "uninstallDisplayName": "MarketLab ${version}",
+      "artifactName": "${productName}-Setup-${version}.${ext}"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png",
+      "category": "public.app-category.finance",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "identity": null,
+      "files": [
+        "!**/node_modules/better-sqlite3/prebuilds/linux*-*.node",
+        "!**/node_modules/better-sqlite3/prebuilds/win32-*.node"
+      ]
+    },
+    "dmg": {
+      "title": "MarketLab ${version}",
+      "contents": [
+        {
+          "x": 140,
+          "y": 200,
+          "type": "file"
+        },
+        {
+          "x": 400,
+          "y": 200,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "portable": {
+      "artifactName": "${productName}-Portable-${version}.${ext}"
+    }
+  },
+  "homepage": "https://github.com/shahar-nadiv/marketlab",
+  "desktopName": "marketlab.desktop"
+}

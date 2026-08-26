@@ -1,0 +1,149 @@
+# ---------------------------------------------------------------------------
+# MarketLab (Electron + Vite + React + TypeScript)
+# NOTE: build/ is intentionally NOT ignored - it holds electron-builder
+#       buildResources (icons, tray images) that must be committed.
+# ---------------------------------------------------------------------------
+
+# --- Dependencies ----------------------------------------------------------
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+jspm_packages/
+web_modules/
+
+# --- Build output ----------------------------------------------------------
+dist/
+dist-ssr/
+out/
+build/Release/
+*.tsbuildinfo
+.tsbuildinfo
+
+# --- electron-builder / packaged artifacts ---------------------------------
+release/
+release-builds/
+app-builds/
+*.AppImage
+*.deb
+*.rpm
+*.snap
+*.dmg
+*.pkg
+*.exe
+*.msi
+*.blockmap
+*.nsis.7z
+*.zip
+!build/**/*.zip
+
+# --- Native module rebuild artifacts (better-sqlite3) ----------------------
+prebuilds/
+*.node
+build/Debug/
+.node-gyp/
+node_gyp_bins/
+
+# --- Vite / bundler caches -------------------------------------------------
+.vite/
+.cache/
+.parcel-cache/
+.rollup.cache/
+.turbo/
+.swc/
+
+# --- Electron caches -------------------------------------------------------
+.electron/
+.electron-gyp/
+.electron-builder-cache/
+
+# --- Test / coverage -------------------------------------------------------
+coverage/
+*.lcov
+.nyc_output/
+.vitest/
+test-results/
+playwright-report/
+blob-report/
+__snapshots__/*.snap.new
+
+# --- Local app data (SQLite, user data, captures) --------------------------
+*.sqlite
+*.sqlite3
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+userData/
+capture.png
+captures/
+screenshots/
+
+# --- Environment & secrets -------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.mobileprovision
+.certificates/
+
+# --- Logs ------------------------------------------------------------------
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.npm/
+.eslintcache
+.stylelintcache
+
+# --- Editors / IDEs --------------------------------------------------------
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# --- OS --------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*~
+.fuse_hidden*
+.nfs*
+
+# --- Misc ------------------------------------------------------------------
+tmp/
+temp/
+*.tmp
+*.bak
+*.orig
+*.rej
+
+# --- Stray nested git repo (accidental `git init`) -------------------------
+/market_lab/

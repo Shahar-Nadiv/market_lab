@@ -1,0 +1,87 @@
+@import 'tailwindcss';
+
+/*
+ * Trading UIs are read at a glance for long stretches, so the palette is built
+ * around a near-black ground with a single accent, and text sizes stay tight.
+ */
+@theme {
+  --color-ground: #0b0e11;
+  --color-panel: #131920;
+  --color-panel-2: #1a222c;
+  --color-edge: #232d3a;
+  --color-ink: #e6edf3;
+  --color-ink-dim: #8b98a8;
+  --color-ink-faint: #5a6675;
+  --color-accent: #2962ff;
+  --color-up: #26a69a;
+  --color-down: #ef5350;
+
+  --font-mono: 'JetBrains Mono', 'SF Mono', 'Menlo', 'Consolas', monospace;
+}
+
+/*
+ * Light theme.
+ *
+ * `@theme` above defines the dark palette as the default; this block overrides
+ * the same tokens when the app sets `data-theme="light"` on <html>. It must
+ * stay in step with `LIGHT` in `chart/theme.ts` — lightweight-charts needs
+ * concrete colour strings at construction time and cannot read CSS variables,
+ * so the two palettes are declared separately and have to agree. Without this
+ * block the chart honours the setting while the chrome ignores it, which reads
+ * as a white plot area inside a dark app.
+ */
+:root[data-theme='light'] {
+  --color-ground: #ffffff;
+  --color-panel: #f7f9fc;
+  --color-panel-2: #eef1f5;
+  --color-edge: #d6dce4;
+  --color-ink: #131722;
+  --color-ink-dim: #5a6675;
+  --color-ink-faint: #8a97a6;
+  --color-accent: #2962ff;
+  --color-up: #10897e;
+  --color-down: #d93a36;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+/* The scrollbar is chrome too, and defaults to the OS light widget. */
+:root[data-theme='light'] ::-webkit-scrollbar-thumb:hover {
+  background: #b8c2cf;
+}
+
+body {
+  margin: 0;
+  background: var(--color-ground);
+  color: var(--color-ink);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  overflow: hidden;
+  /* Desktop app: text selection should feel deliberate, not accidental. */
+  user-select: none;
+}
+
+/* Numeric columns line up only with tabular figures. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-edge);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #33404f;
+}
