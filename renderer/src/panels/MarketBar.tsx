@@ -23,7 +23,7 @@ export interface MarketRegion {
 export const MARKET_REGIONS: MarketRegion[] = [
   {
     id: 'us',
-    label: 'US Markets',
+    label: 'Israel Markets',
     symbols: [
       { symbol: '^GSPC', label: 'S&P 500' },
       { symbol: '^DJI', label: 'Dow 30' },
